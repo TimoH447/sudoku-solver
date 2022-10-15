@@ -1,11 +1,11 @@
-import cv2 as cv
+import cv2 as cv #pip install opencv-python
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-from thresholding import Threshold_Demo
+from src.thresholding import Threshold_Demo
 
-asset_path = "C:\\Users\\timoh\\OneDrive\\Dokumente\\Bildung\\Programmieren\\SudokuSolver\\assets"
+asset_path = "C:\\Users\\timoh\\OneDrive\\Dokumente\\Bildung\\Programmieren\\sudoku-solver\\assets"
 
 def load_image(filename):
     new_path = os.path.join(asset_path, filename)
@@ -54,6 +54,18 @@ def line_detection(edges, img):
         cv.line(img, pt1,pt2,(0,0,255),2)
     cv.imshow("Lines", img)
     cv.waitKey()
+
+def main():
+    img = load_image("Sudoku_front.jpg")
+    img = center_sudoku(img)
+
+    img = Threshold_Demo(img)
+    show_image(img)
+    
+    edges = cv.Canny(img,50,150,None, 3)
+    line_detection(edges,img)
+    return img
+    
 
 
 if __name__=="__main__":
