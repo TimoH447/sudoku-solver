@@ -1,5 +1,3 @@
-from io import TextIOWrapper
-import base64
 from flask import Flask
 from flask import request
 from flask import render_template

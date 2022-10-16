@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import os
 
 from src.thresholding import Threshold_Demo
+from config.definitions import ASSET_PATH
 
-asset_path = "C:\\Users\\timoh\\OneDrive\\Dokumente\\Bildung\\Programmieren\\sudoku-solver\\assets"
+asset_path = ASSET_PATH
 
 def load_image(filename):
     new_path = os.path.join(asset_path, filename)
