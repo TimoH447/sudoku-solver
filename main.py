@@ -1,4 +1,7 @@
+from io import TextIOWrapper
+import base64
 from flask import Flask
+from flask import request
 from flask import render_template
 
 from src.frontend import convert_to_frontend
@@ -15,6 +18,16 @@ def index():
 @app.route("/1")
 def page_1(name= "Timo"):
     return render_template('example.html',name = name)
+
+@app.route("/2", methods=['GET','POST'])
+def page_2():
+    if request.method == 'POST':
+        img = request.files['img']
+        img.save('assets/upload.jpg')
+        main()
+        return "Sucess" 
+    
+    return render_template('capture_img.html')
 
 
 if __name__=="__main__":

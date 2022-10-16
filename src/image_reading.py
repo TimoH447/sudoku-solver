@@ -56,7 +56,7 @@ def line_detection(edges, img):
     cv.waitKey()
 
 def main():
-    img = load_image("Sudoku_front.jpg")
+    img = load_image("upload.jpg")
     img = center_sudoku(img)
 
     img = Threshold_Demo(img)
