@@ -7,7 +7,11 @@ from src.image_reading import main
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/')
+def rick():
+    return render_template('rickroll.html')
+
+@app.route("/3")
 def index():
     img = main()
     ergebnis = convert_to_frontend(img)
@@ -21,11 +25,12 @@ def page_1(name= "Timo"):
 def page_2():
     if request.method == 'POST':
         img = request.files['img']
+        print(img)
         img.save('assets/upload.jpg')
-        main()
-        return "Sucess" 
-    
+        
+        return render_template("picture.html", image = "assets/upload.jpg" )
     return render_template('capture_img.html')
+
 
 
 if __name__=="__main__":

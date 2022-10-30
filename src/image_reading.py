@@ -1,7 +1,9 @@
+import os
+
 import cv2 as cv #pip install opencv-python
 import numpy as np
 import matplotlib.pyplot as plt
-import os
+
 
 from src.thresholding import Threshold_Demo
 from config.definitions import ASSET_PATH
@@ -57,7 +59,7 @@ def line_detection(edges, img):
     cv.waitKey()
 
 def main():
-    img = load_image("upload.jpg")
+    img = load_image("Sudoku_front.jpg")
     img = center_sudoku(img)
 
     img = Threshold_Demo(img)
@@ -70,7 +72,6 @@ def main():
 
 
 if __name__=="__main__":
-    
     img = load_image("Sudoku_angle.jpg")
     img = center_sudoku(img)
 

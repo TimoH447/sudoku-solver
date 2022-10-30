@@ -4,6 +4,8 @@ input with camera
     solving Sudokus logic
 Output to humanreadable
 
+This is an example web app with opencv, but only deployed locally
+https://betterprogramming.pub/build-a-computer-vision-webapp-flask-opencv-and-mongodb-62a52d38738a 
 
 Todo:
 1. Github

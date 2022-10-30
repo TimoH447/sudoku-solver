@@ -110,3 +110,5 @@ if __name__=="__main__":
         block_solve(sudoku)
         trial +=1 
     print(sudoku)
+
+#ADD if sudoku stays the same for a loop then check if solved or not solvable

@@ -1,4 +1,4 @@
-import pytest
+
 import unittest
 
 from src.solver import solve_sudoku
