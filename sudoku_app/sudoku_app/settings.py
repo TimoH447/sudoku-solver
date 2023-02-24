@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from os import getenv
+import json
+
+# Secret key etc for local development
+with open('sudoku_app/env_var.json','r') as env_var:
+    var = json.load(env_var)
+DJANGO_SECRET_KEY = var['DJANGO_SECRET_KEY']
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getenv("DJANGO_SECRET_KEY",'django-insecure-cq1cb!w))0+$+ht*58tzu%g(+=4=jef=lv%bh5kd#%brz26#)j')
+SECRET_KEY = getenv("DJANGO_SECRET_KEY",DJANGO_SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
