@@ -1,0 +1,57 @@
+.sudoku-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sudoku-grid {
+    border-collapse: collapse;
+    border: 5px solid black;
+    background-color: black;
+    margin-top: 20px;
+  }
+  
+  .sudoku-cell {
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 24px;
+  }
+  .sudoku-col:nth-child(3n), .sudoku-col:nth-child(6n) {
+      border-right: 5px solid black;
+  }
+  
+  .sudoku-row:nth-child(3n), .sudoku-row:nth-child(6n) td {
+      border-bottom: 5px solid black;
+  }
+  
+  .sudoku-input {
+    border: 1px solid black;
+    padding: 2px;
+    width: 100%;
+    height: 100%;
+    font-size: inherit;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .sudoku-input:focus {
+    outline: none;
+  }
+  
+  .sudoku-submit {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: white;
+    border: 2px solid black;
+    cursor: pointer;
+  }
+  
+  .sudoku-submit:hover {
+    background-color: black;
+    color: white;
+  }
+  

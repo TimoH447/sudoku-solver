@@ -1,0 +1,36 @@
+{% load sudoku_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'sudoku_solver/sudoku-solver.css' %}">
+</head>
+
+<body>
+{% if not valid %}
+The input has to be numbers from 1-9.
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  <table class="sudoku-grid">
+    {% for row in nine %}
+      <tr class="sudoku-row">
+        {% for col in nine %}
+          <td class="sudoku-col">
+            <input type="text" class="sudoku-cell" value="{{ stored_cells|argument_helper:row|sudoku_value:col }}" name="sudoku-cell" maxlength="1" size="1">
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+
+</html>
