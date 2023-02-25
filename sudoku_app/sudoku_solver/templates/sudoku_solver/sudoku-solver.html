@@ -12,26 +12,41 @@
 </head>
 
 <body>
-{% if not valid %}
-The input has to be numbers from 1-9.
-{% endif %}
-<form method="post">
-  {% csrf_token %}
-  <table class="sudoku-grid">
-    {% for row in nine %}
-      <tr class="sudoku-row">
-        {% for col in nine %}
-          <td class="sudoku-col">
-            <input type="text" class="sudoku-cell" value="{{ stored_cells|argument_helper:row|sudoku_value:col }}" name="sudoku-cell" maxlength="1" size="1">
-          </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </table>
-  <button type="submit" name="button" value="submit">Submit</button>
-  <button type="submit" name="button" value="reset">Reset</button>
-</form>
+<header>
+  <h1> SUDOKU-SOLVER </h1>
+</header>
 
+<section class="main">
+  <div class="sudoku-box">
+    {% if not valid %}
+    The input has to be numbers from 1-9.
+    {% endif %}
+    <form method="post" class="sudoku-form">
+      {% csrf_token %}
+      <table class="sudoku-grid">
+        {% for row in nine %}
+          <tr class="sudoku-row">
+            {% for col in nine %}
+              <td class="sudoku-col">
+                <input type="text" class="sudoku-cell" value="{{ stored_cells|argument_helper:row|sudoku_value:col }}" name="sudoku-cell" maxlength="1" size="1">
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </table>
+      <div class="button-container">
+        <button type="submit" name="button" value="reset">Reset</button>
+        <button type="submit" name="button" value="submit">Submit</button>
+      </div>
+    </form>
+    <div class="sudoku-description">
+      Geben Sie ein Sudoku ein und lassen es automatisch lösen!
+    </div>
+  </div>
+</section>
+<section class="end">
+  Die Seite verwendet keine Cookies.
+</section>
 </body>
 
 </html>
