@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from .solver import solver
+from sudoku.solver import solver
 
 # Create your views here.
 
@@ -36,10 +36,9 @@ class SudokuView(View):
             context['valid'] = False
         else:
             context['valid'] = True
-            cells = solver.preprocess_list(stored_cells)
-            print(cells)
-            solver.naive_solver(cells)
-            solved = solver.revert_sudoku_to_list(cells)
+            sudoku = solver.Sudoku(stored_cells)
+            sudoku.solve_sudoku()
+            solved =  sudoku.get_sudoku_as_list()
             context['stored_cells'] = solved
         return render(request, 'sudoku_solver/sudoku-solver.html', context)
 
