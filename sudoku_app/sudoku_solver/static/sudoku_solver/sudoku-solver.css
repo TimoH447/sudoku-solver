@@ -20,6 +20,7 @@ header h1 {
 }
 
 .sudoku-box {
+  max-width: 100%;
   padding-right: 20px;
   padding-left: 20px;
   padding-top: 40px;
@@ -42,10 +43,35 @@ header h1 {
   border-radius: 4px;
   border: 5px solid #333;
   background-color: #333;
-  width: 100%; /* adjust the width to fit with the container */
   max-width: 500px; /* add a maximum width to prevent the grid from getting too wide */
+  margin: 0 auto; /* center the grid horizontally */
 }
 
+@media only screen and (max-width: 600px) {
+  .sudoku-grid {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-top: auto;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    border: 3px solid #333;
+  }
+  .sudoku-grid::before,
+  .sudoku-grid::after {
+    content: '';
+    display: block;
+    height: 0;
+    width: 10px;
+  }
+  .sudoku-grid::before {
+    float: left;
+  }
+  .sudoku-grid::after {
+    float: right;
+  }
+}
 .sudoku-cell {
   height: 50px;
   width: 50px;
@@ -56,6 +82,7 @@ header h1 {
   border: none; /* remove the border */
   padding: 0; /* remove the padding */
   margin: 0; /* remove the margin */
+  color: #333;
 }
 
 .sudoku-col:nth-child(3n),
@@ -66,6 +93,24 @@ header h1 {
 .sudoku-row:nth-child(3n) td,
 .sudoku-row:nth-child(6n) td {
   border-bottom: 5px solid #333;
+}
+
+@media only screen and (max-width: 600px) {
+  .sudoku-cell {
+    height: calc((90vw - 80px) / 9);
+    width: calc((90vw - 80px) / 9);
+    font-size: calc((85vw - 60px) / 14);
+    color: #333;
+  }
+.sudoku-col:nth-child(3n),
+.sudoku-col:nth-child(6n) {
+  border-right: 2px solid #333;
+}
+
+.sudoku-row:nth-child(3n) td,
+.sudoku-row:nth-child(6n) td {
+  border-bottom: 2px solid #333;
+}
 }
 
 .sudoku-submit {
