@@ -34,7 +34,7 @@ jobs:
           zip -r deploy.zip ./ -x '*.git*'
 
       - name: Upload deployment package
-        run: aws s3 cp deploy.zip s3://${{env.BUCKET_NAME}}/
+        run: aws s3 cp sudoku_app/deploy.zip s3://${{env.BUCKET_NAME}}/
 
       - name: Create new eb application version
         run: |
