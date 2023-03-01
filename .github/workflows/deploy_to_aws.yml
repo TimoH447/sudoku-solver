@@ -11,6 +11,10 @@ jobs:
       AWS_REGION: eu-central-1
       APP_NAME: sudoku-solver
       EB_ENVIRONMENT: Sudokusolver-env-1
+    
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: configureawscredentials
@@ -19,6 +23,7 @@ jobs:
           role-to-assume: arn:aws:iam::382638362731:role/github-actions-role
           role-session-name: sudokurolesession
           aws-region: ${{env.AWS_REGION}}
+          
 
       - name: checkoutrepo
         uses: actions/checkout@v2
