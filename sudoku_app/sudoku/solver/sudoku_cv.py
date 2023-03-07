@@ -1,3 +1,5 @@
+import os
+
 from PIL import Image, ImageFilter,ImageDraw
 import numpy as np
 from matplotlib import pyplot as plt
@@ -5,7 +7,7 @@ from matplotlib import pyplot as plt
 ASSET_DIR = "/Users/timoh/OneDrive/Dokumente/Bildung/Programmieren/old_version/assets/"
 DEBUG = True
 
-def rescale_img(image):
+def rescale_img(image,DEBUG = False):
     height, width = image.height, image.width
     scaled  = image.resize((int(width/8),int(height/8)),Image.Resampling.LANCZOS)
     if DEBUG:
@@ -345,13 +347,38 @@ def find_coeffs(pa, pb):
 
 def transform_img(image,vertices,vertices_transformed):
     coeffs = find_coeffs(vertices_transformed,vertices)            
-    return image.transform((270,270),Image.PERSPECTIVE,coeffs,Image.BICUBIC)
+    return image.transform((270,270),Image.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
 
 def coordinates_switched(lst):
     switched = []
     for i,j in lst:
         switched.append((j,i)) 
     return switched
+
+def add_suffix(filepath):
+    dirname, filename = os.path.split(filepath)
+    filename, ext = os.path.splitext(filename)
+    new_filename = filename + '_transformed' + ext
+    return os.path.join(dirname, new_filename)
+
+
+def extract_sudoku(image_path):
+    unmodified_image = Image.open(image_path)
+    image = grayscale_img(unmodified_image)
+    image = gaussian_blur(image)
+    image = rescale_img(image)
+    image = adaptive_thresholding(image)
+
+    sudoku_contour = get_sudoku_contour(image)
+    vertices = get_sudoku_vertices(image,sudoku_contour)
+    vertices_in_transformed = [(270,270),(270,0),(0,0),(0,270)]
+
+    transformed = transform_img(rescale_img(unmodified_image),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
+    new_filename = add_suffix(image_path)
+    transformed.save(new_filename)
+
+    return transformed
+
 
 if __name__=="__main__":
     img_name = "Sudoku_angle.jpg"
@@ -365,13 +392,13 @@ if __name__=="__main__":
     vertices = get_sudoku_vertices(img,sudoku_contour)
     vertices_in_transformed = [(270,270),(270,0),(0,0),(0,270)]
 
-    transformed = transform_img(rescale_img(color_img),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
-    transformed.show()
-
+    
     rescaled = rescaled.convert("RGB")
     img = draw_circles_around_vertices(rescaled,vertices)
     img.show()
-    np_image=pillow2np(img)
 
-    #img = contour_tracing(img)
+    transformed = transform_img(rescale_img(color_img),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
+    transformed.show()
+
+
     
