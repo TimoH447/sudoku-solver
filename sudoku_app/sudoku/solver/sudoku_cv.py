@@ -14,7 +14,7 @@ def rescale_img(image,DEBUG = False):
         scaled.show()
     return scaled
 
-def gaussian_blur(image, radius = 7):
+def gaussian_blur(image, radius = 7, DEBUG=False):
     result = image.filter(ImageFilter.GaussianBlur(radius))
     if DEBUG:
         result.show()
@@ -71,7 +71,7 @@ def pillow2np(pillow_img):
     np_img=np.array(pillow_img)
     return np_img
 
-def adaptive_thresholding(image):
+def adaptive_thresholding(image,DEBUG=False):
     np_img = pillow2np(image)
     np_img = bradley_binary_thresh(np_img)
     result = np2pillow(np_img)
@@ -154,10 +154,6 @@ def draw_image_border(image, val=0):
         image[j,-1]=val
     return image
 
-def fill_contour(image,NBD):
-    pass
-
-
 def find_contours(image):
     height,width = image.shape
     f = image
@@ -171,7 +167,6 @@ def find_contours(image):
 
             if f[row,col-1]==0 and f[row,col]==1:
                 contour = trace_border(image,(row,col),NBD)
-                fill_contour(image,NBD)
                 all_contours.append(contour)
                 NBD+=1
 
@@ -220,7 +215,7 @@ def draw_circles_around_vertices(img, vertices, radius=5):
     
     return img
 
-def contour_tracing(image):
+def contour_tracing(image,DEBUG=False):
     image = pillow2np(image)
     pre_img = draw_image_border(image)
     pre_img = np.where(pre_img==255,1,0)
@@ -262,7 +257,7 @@ def is_vertice(prev,next):
     else:
         return False
 
-def get_sudoku_contour(image):
+def get_sudoku_contour(image,DEBUG=False):
     image = pillow2np(image)
     pre_img = draw_image_border(image)
     pre_img = np.where(pre_img==255,1,0)
@@ -339,7 +334,7 @@ def find_coeffs(pa, pb):
         matrix.append([p1[0], p1[1], 1, 0, 0, 0, -p2[0]*p1[0], -p2[0]*p1[1]])
         matrix.append([0, 0, 0, p1[0], p1[1], 1, -p2[1]*p1[0], -p2[1]*p1[1]])
 
-    A = np.matrix(matrix, dtype=np.float)
+    A = np.matrix(matrix, dtype=float)
     B = np.array(pb).reshape(8)
 
     res = np.dot(np.linalg.inv(A.T * A) * A.T, B)
@@ -347,7 +342,7 @@ def find_coeffs(pa, pb):
 
 def transform_img(image,vertices,vertices_transformed):
     coeffs = find_coeffs(vertices_transformed,vertices)            
-    return image.transform((270,270),Image.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
+    return image.transform((270,270),Image.Transform.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
 
 def coordinates_switched(lst):
     switched = []
@@ -362,7 +357,7 @@ def add_suffix(filepath):
     return os.path.join(dirname, new_filename)
 
 
-def extract_sudoku(image_path):
+def extract_sudoku(image_path,saving=True):
     unmodified_image = Image.open(image_path)
     image = grayscale_img(unmodified_image)
     image = gaussian_blur(image)
@@ -374,19 +369,23 @@ def extract_sudoku(image_path):
     vertices_in_transformed = [(270,270),(270,0),(0,0),(0,270)]
 
     transformed = transform_img(rescale_img(unmodified_image),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
-    new_filename = add_suffix(image_path)
-    transformed.save(new_filename)
+    
+    if saving:
+        new_filename = add_suffix(image_path)
+        transformed.save(new_filename)
 
     return transformed
 
 
 if __name__=="__main__":
-    img_name = "Sudoku_angle.jpg"
+    img_name = "Sudoku_front.jpg"
     color_img = Image.open(ASSET_DIR + img_name)
     img = grayscale_img(color_img)
     img = gaussian_blur(img)
     rescaled = rescale_img(img)
+    rescaled.save(ASSET_DIR+"Sudoku_front_rescaled.png")
     img = adaptive_thresholding(rescaled)
+    img.save(ASSET_DIR+"Sudoku_front_thresh.png")
 
     sudoku_contour = get_sudoku_contour(img)
     vertices = get_sudoku_vertices(img,sudoku_contour)
@@ -396,9 +395,17 @@ if __name__=="__main__":
     rescaled = rescaled.convert("RGB")
     img = draw_circles_around_vertices(rescaled,vertices)
     img.show()
+    img.save(ASSET_DIR+"Sudoku_front_vertices.png")
+    image_highlight_sudoku = rescale_img(color_img)
+    draw = ImageDraw.Draw(image_highlight_sudoku)
+    contour_width=2
+    draw.polygon(coordinates_switched(sudoku_contour),outline=(220,20,60),width=contour_width)
+    image_highlight_sudoku.show()
+    image_highlight_sudoku.save(ASSET_DIR + "Sudoku_front_contour.png")
 
     transformed = transform_img(rescale_img(color_img),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
     transformed.show()
+    transformed.save(ASSET_DIR +"Sudoku_front_transformed.png")
 
 
     

@@ -1,3 +1,5 @@
+import json
+
 import torch
 from torch import nn 
 from torch.utils.data import DataLoader
@@ -162,13 +164,58 @@ def predict_digit(image):
     prediction = classes[output[0].argmax(0)]
     print(prediction)
 
+def digit_images_from_sudoku(image_path):
+    sudoku = sudoku_cv.extract_sudoku(image_path=ASSET_DIR+"Sudoku_front.jpg",saving=False)
+
+    digits = []
+    for i in range(9):
+        for j in range(9):
+            digit_box_coordinates = (j*30,i*30,j*30+30,i*30+30)
+            digits.append(sudoku.crop(digit_box_coordinates))
+    
+    return digits
+
+def directional_analysis(digit_img):
+    digit_img = digit_img.crop((3,3,25,25))
+    np_image = sudoku_cv.pillow2np(digit_img)
+    np_image = sudoku_cv.draw_image_border(np_image)
+    
+    start = sudoku_cv.get_point_on_contour(np_image)
+    if start is None:
+        return []
+    x,y=start
+    
+    direction = 0 # 0: right, 1: right-down, 2: down ...
+    directions_tracing =[]
+    coordinates = []
+
+    while True:
+
+        x,y,direction = sudoku_cv.next_border_clockwise(np_image,x,y,direction)
+        directions_tracing.append(direction)
+        coordinates.append((x,y))
+
+        if (x,y)==start:
+            break
+    
+    return directions_tracing
+def analyse_sudoku_digits(digits):
+    analysis= [ ]
+    for digit in digits:
+        i=0
+        directions = directional_analysis(digit)
+        analysis.append(directions)
+
+    with open(ASSET_DIR+"analysis.json","w+") as file:
+        json.dump(analysis,file)
+
+def digit_preprocess(digit_img):
+    # crop to 28x28 pixels
+    digit_img = digit_img.crop((1,1,29,29))
+    digit_img = sudoku_cv.grayscale_img(digit_img)
+    digit_img = sudoku_cv.adaptive_thresholding(digit_img)
+    return digit_img
+
 if __name__=="__main__":
     #sudoku_cv.extract_sudoku(ASSET_DIR + "Sudoku_front.jpg")
-
-    sudoku= Image.open(ASSET_DIR +"Sudoku_front_transformed.jpg").convert('L')
-    box_coordinates = (60,60,90,90)
-    cropped_image = sudoku.crop(box_coordinates)
-    cropped_image.show()
-
-    predict_digit(cropped_image)
-
+    pass    
