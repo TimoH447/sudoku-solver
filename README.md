@@ -12,7 +12,7 @@ The easiest way to solve a sudoku from a picture is when it is in the form of th
 
 In that case we can devide the width and height of the picture by 9 and then we can cut out each digit. 
 Thus we first need to be able to create from a normal picture
-![This is an image](doc/Sudoku_angle.png)
+![This is an image](doc/Sudoku_angle_rescaled.png)
 
 a picture where we only see the sudoku and without an angle. For this we need to find 4 points from which we know where they lay in the picture with the changed perspective. These 4 point are the vertices of the sudoku. We know that they are connected by straight lines when we view them from the front.
 
