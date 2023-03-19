@@ -43,6 +43,16 @@
       Geben Sie ein Sudoku ein und lassen es automatisch lösen!
     </div>
   </div>
+  <div class="foto-upload-box">
+    <h2> Upload a sudoku image </h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="button-container">
+        <input type="file" accept="image/*" name="photo" id="photo" capture="camera">
+        <button type="submit" name="button">Upload</button>
+      </div>
+    </form>
+  </div>
 </section>
 <section class="end">
   Die Seite verwendet keine Cookies.
