@@ -144,14 +144,16 @@ def trace_border(image,start,NBD):
 
     return contour
 
-def draw_image_border(image, val=0):
+def draw_image_border(image, val=0, border_width=1):
     height,width = image.shape
     for i in range(width):
-        image[0,i]=val
-        image[-1,i]=val
+        for k in range(border_width):
+            image[k,i]=val
+            image[-(k+1),i]=val
     for j in range(height):
-        image[j,0]=val
-        image[j,-1]=val
+        for k in range(border_width):
+            image[j,k]=val
+            image[j,-(k+1)]=val
     return image
 
 def find_contours(image):
@@ -328,6 +330,7 @@ def get_sudoku_vertices(image,contour):
     vertices = find_vertices_sudoku(contour_image)
     return vertices
 
+# from so: https://stackoverflow.com/questions/14177744/how-does-perspective-transformation-work-in-pil
 def find_coeffs(pa, pb):
     matrix = []
     for p1, p2 in zip(pa, pb):
@@ -375,6 +378,7 @@ def extract_sudoku(image_path,saving=True):
         transformed.save(new_filename)
 
     return transformed
+
 
 
 if __name__=="__main__":

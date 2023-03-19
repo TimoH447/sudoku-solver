@@ -9,25 +9,6 @@ import sudoku_cv
 
 ASSET_DIR = "/Users/timoh/OneDrive/Dokumente/Bildung/Programmieren/old_version/assets/"
 
-mnist = tf.keras.datasets.mnist
-
-(x_train,y_train),(x_test,y_test) = mnist.load_data()
-x_train,x_test = x_train/255.0,x_test/255.0
-
-model = tf.keras.models.Sequential([
-    tf.keras.layers.Flatten(input_shape=(28,28)),
-    tf.keras.layers.Dense(128,activation="relu"),
-    tf.keras.layers.Dropout(0.2),
-    tf.keras.layers.Dense(10)
-])
-
-loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-
-model.compile(optimizer='adam',
-              loss=loss_fn,
-              metrics=['accuracy'])
-
-
 def digit_images_from_sudoku(image_path):
     sudoku = sudoku_cv.extract_sudoku(image_path=image_path,saving=False)
 
@@ -81,25 +62,87 @@ def digit_preprocess(digit_img):
     np_image= sudoku_cv.pillow2np(digit_img)
     np_image = np_image / 255.0
     np_image=np_image.astype('float32')
-    np_image = np.reshape(np_image,(1,28,28))
     
     return np_image
 
-def get_prediction(images):
-    model.fit(x_train, y_train, epochs=5)
+def is_empty(img_digit):
+    img_digit = sudoku_cv.draw_image_border(img_digit,val=0,border_width=4)
+    pixels_of_digit = np.count_nonzero(img_digit)
+    if pixels_of_digit < 13:
+        return True
+    return False
+
+def preprocess_2(img_digit):
+    img_digit = sudoku_cv.draw_image_border(img_digit, val=0, border_width=3)
+    return img_digit
+
+def add_border(np_img, border_width):
+    height,width =np_img.shape
+    img_with_border = np.zeros((height+2*border_width,width+2*border_width))
+    for i in range(height):
+        for j in range(width):
+            img_with_border[i+border_width,j+border_width]=np_img[i,j]
+    return img_with_border
+            
+def preprocess_vgg(np_image):
+    np_image=add_border(np_image,2)
+    np_image=np.expand_dims(np_image,axis=-1)
+    rgb_img = np.repeat(np_image[..., np.newaxis], 3, -1)
+    rgb_img = np.resize(rgb_img,(1,32,32,3))
+    return rgb_img
+
+def make_digit_ready(digit_img):
+    digit_img = digit_img.crop((1,1,29,29))
+    digit_img = sudoku_cv.grayscale_img(digit_img)
+    digit_img = sudoku_cv.adaptive_thresholding(digit_img)
+    return digit_img
+
+
+def get_prediction(img_digit):
+
+    model = tf.keras.models.load_model(ASSET_DIR+"digit_model.h5")
 
     probability_model = tf.keras.Sequential([
         model,
         tf.keras.layers.Softmax()
     ])
+    if is_empty(img_digit): 
+        return ""
+    #img_digit = preprocess_2(img_digit)
+    #img_digit = preprocess_vgg(img_digit)
+    img_digit = np.reshape(img_digit,(1,28,28))
+    prediction = probability_model.predict(img_digit,batch_size=1)
+    print(prediction)
+    return prediction.argmax()
+
+def digit_recognition(images): 
+    
+    digits = []    
     for index,image in enumerate(images):
         print(index)
-        print(probability_model.predict(image))
+        digit = get_prediction(image)
+        digits.append(digit)
+    
+    return digits
 
 if __name__=="__main__":
-    digits = digit_images_from_sudoku(ASSET_DIR+"Sudoku_front.jpg") 
-    digits = [digit_preprocess(digit) for digit in digits]
-    #digits = np.expand_dims(digits,-1)
-    get_prediction(digits)
+    # get a list of pictures of the digits
+    digits_img = digit_images_from_sudoku(ASSET_DIR+"Sudoku_front.jpg") 
 
+    digit = make_digit_ready(digits_img[2])
+    digit.save("Digit_Img_1.png")
+    digit = make_digit_ready(digits_img[5])
+    digit.save("Digit_Img_2.png")
+    digit = make_digit_ready(digits_img[7])
+    digit.save("Digit_Img_3.png")
+    digit = make_digit_ready(digits_img[11])
+    digit.save("Digit_Img_4.png")
+    digit = make_digit_ready(digits_img[12])
+    digit.save("Digit_Img_5.png")
+    # add preprocessing to pictures
+    digits_img = [digit_preprocess(digit) for digit in digits_img]
+    
+    # turn the images into integers
+    digits = digit_recognition(digits_img)
+    print(digits)
     
