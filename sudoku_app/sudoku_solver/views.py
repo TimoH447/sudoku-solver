@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from sudoku.solver import solver
+from sudoku.solver import sudoku_api
 
 # Create your views here.
 
@@ -36,10 +37,23 @@ class SudokuView(View):
             context['stored_cells'] = get_empty_sudoku_list()
             context['valid'] = True
             return render(request,'sudoku_solver/sudoku-solver.html', context)
-        # checking input
-        if not valid_input(stored_cells):
-            context['valid'] = False
+        # upload image button: input of an sudoku via image
+        elif request.POST.getlist("button")[0]=="upload":
+            # fetch the image from the request
+            print(request.FILES)
+            image=request.FILES.getlist('photo')
+            print(image)
+            image = image[0]
+            # turn image into the digits of sudoku
+            digits = sudoku_api.convert_image_to_digits(image)
+            context['stored_cells']= digits
+        # solve button: 
         else:
+            # checking if the input in all sudoku cells is correct
+            if not valid_input(stored_cells):
+                context['valid'] = False
+                return render(request, 'sudoku_solver/sudoku-solver.html', context)
+
             # if input is valid, solve the sudoku
             context['valid'] = True
             sudoku = solver.Sudoku(stored_cells)

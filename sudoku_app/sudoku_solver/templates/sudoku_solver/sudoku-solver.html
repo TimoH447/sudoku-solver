@@ -45,11 +45,11 @@
   </div>
   <div class="foto-upload-box">
     <h2> Upload a sudoku image </h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="button-container">
         <input type="file" accept="image/*" name="photo" id="photo" capture="camera">
-        <button type="submit" name="button">Upload</button>
+        <button type="submit" name="button" value="upload">Upload</button>
       </div>
     </form>
   </div>

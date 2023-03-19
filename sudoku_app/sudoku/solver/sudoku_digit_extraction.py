@@ -10,7 +10,8 @@ import sudoku_cv
 ASSET_DIR = "/Users/timoh/OneDrive/Dokumente/Bildung/Programmieren/old_version/assets/"
 
 def digit_images_from_sudoku(image_path):
-    sudoku = sudoku_cv.extract_sudoku(image_path=image_path,saving=False)
+    image = Image.open(image_path)
+    sudoku = sudoku_cv.extract_sudoku(image)
 
     digits = []
     for i in range(9):

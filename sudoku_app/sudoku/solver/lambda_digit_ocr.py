@@ -20,7 +20,7 @@ def lambda_digit_recognition(bucket: str,key: str) -> int:
 
     # Rufen Sie die Lambda-Funktion auf
     response = lambda_client.invoke(
-        FunctionName='digit-ocr-v1',
+        FunctionName='digit-ocr-v2',
         Payload=json.dumps(payload)
     )
 

@@ -360,8 +360,7 @@ def add_suffix(filepath):
     return os.path.join(dirname, new_filename)
 
 
-def extract_sudoku(image_path,saving=True):
-    unmodified_image = Image.open(image_path)
+def extract_sudoku(unmodified_image):
     image = grayscale_img(unmodified_image)
     image = gaussian_blur(image)
     image = rescale_img(image)
@@ -373,9 +372,6 @@ def extract_sudoku(image_path,saving=True):
 
     transformed = transform_img(rescale_img(unmodified_image),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
     
-    if saving:
-        new_filename = add_suffix(image_path)
-        transformed.save(new_filename)
 
     return transformed
 
