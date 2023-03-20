@@ -5,3 +5,4 @@ psycopg2-binary==2.9.5
 sqlparse==0.4.3
 tzdata==2022.7
 numpy
+boto3
