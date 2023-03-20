@@ -2,7 +2,7 @@ import os
 
 from PIL import Image, ImageFilter,ImageDraw
 import numpy as np
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 ASSET_DIR = "/Users/timoh/OneDrive/Dokumente/Bildung/Programmieren/old_version/assets/"
 DEBUG = True
