@@ -35,7 +35,7 @@ def is_empty(img_digit):
 def get_prediction(digit_image):
     if is_empty(digit_image): 
         return ""
-    aws_interface = AwsInterface(in_development= True)
+    aws_interface = AwsInterface(in_development= False)
     predicted_img = aws_interface.lambda_digit_recognition("sudoku-solver-bucket","images/digit.png")
     return predicted_img
     
