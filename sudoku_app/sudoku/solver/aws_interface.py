@@ -11,8 +11,8 @@ class AwsInterface:
             self.s3 = boto3.client('s3',region_name = env['AWS_REGION'],aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],aws_access_key_id=env['AWS_ACCESS_KEY'])
             self.lambda_client = boto3.client('lambda',region_name = env['AWS_REGION'],aws_secret_access_key=env['AWS_SECRET_ACCESS_KEY'],aws_access_key_id=env['AWS_ACCESS_KEY'])
         else:
-            self.s3 = boto3.client('s3')
-            self.lambda_client = boto3.client('lambda')
+            self.s3 = boto3.client('s3', region_name="eu-central-1")
+            self.lambda_client = boto3.client('lambda',region_name="eu-central-1")
 
     def upload_photo(self,image,image_name):
         buffer = io.BytesIO()
