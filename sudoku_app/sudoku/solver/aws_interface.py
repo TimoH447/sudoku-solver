@@ -55,7 +55,7 @@ class AwsInterface:
         payload_dict = json.loads(payload_dict['body'])
         print(payload_dict)
         try:
-            predicted_digit = payload_dict['body'].get('predicted_digit',0)
+            predicted_digit = payload_dict.get('predicted_digit',0)
         except:
             print(payload_dict)
             predicted_digit = 0
