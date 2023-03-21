@@ -47,7 +47,7 @@ def convert_image_to_digits(image_file):
     A list is return with the digits of the sudoku.
     """
     print("Start convert_image_to_digits")
-    aws_interface = AwsInterface(in_development= True)
+    aws_interface = AwsInterface(in_development= False)
 
     img = Image.open(image_file)
 
