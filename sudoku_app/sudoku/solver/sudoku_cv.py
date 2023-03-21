@@ -368,7 +368,10 @@ def extract_sudoku(unmodified_image):
 
     sudoku_contour = get_sudoku_contour(image)
     vertices = get_sudoku_vertices(image,sudoku_contour)
+    # lower left corner -> upper left
     vertices_in_transformed = [(270,270),(270,0),(0,0),(0,270)]
+    # uper left -> upper left 
+    vertices_in_transformed = [(270,0),(0,0),(0,270),(270,270)]
 
     transformed = transform_img(rescale_img(unmodified_image),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
     
