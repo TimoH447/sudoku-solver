@@ -53,6 +53,10 @@ class AwsInterface:
         payload_str = response['Payload'].read().decode('utf-8')
         payload_dict = json.loads(payload_str)
         print(payload_dict)
-        predicted_digit = payload_dict['body'].get('predicted_digit',0)
+        try:
+            predicted_digit = payload_dict['body'].get('predicted_digit',0)
+        except:
+            print(payload_dict)
+            predicted_digit = 0
         
         return predicted_digit 
