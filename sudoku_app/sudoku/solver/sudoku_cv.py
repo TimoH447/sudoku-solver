@@ -359,6 +359,40 @@ def add_suffix(filepath):
     new_filename = filename + '_transformed' + ext
     return os.path.join(dirname, new_filename)
 
+def order_vertices(vertices):
+    """
+    Input a list of 4 vertices and output a list which is ordered such that the first vertex 
+    is the upper left corner and than continues clockwise.
+    (coordinates are in (y,x) form)
+    """
+    # sort vertices in directions (x-axis is second argument)
+    x_sorted = sorted(vertices, key=lambda coords: coords[1])
+    y_sorted = sorted(vertices, key=lambda coords: coords[0])
+
+    upper_vertices = y_sorted[0:2]
+    print(upper_vertices)
+    left_vertices = x_sorted[0:2]
+    print(left_vertices)
+
+    upper_left = [vertex for vertex in upper_vertices if vertex in left_vertices] 
+
+    # upper_left can be empty or 2 vertices if the sudoku is in a strange angle
+    if len(upper_left)!=1:
+        upper_left = left_vertices[0]
+    else:
+        upper_left = upper_left[0]
+    print(upper_left)
+    # now we have got the upper left coordinate
+    # since the orginal vertices list is clockwise ordered we can use that
+    upper_left_index=0
+    for i,vertex in enumerate(vertices):
+        if vertex == upper_left:
+            upper_left_index = i   
+            print(upper_left_index)
+    ordered_vertices = vertices[upper_left_index:]+vertices[0:upper_left_index]
+
+    return ordered_vertices
+    
 
 def extract_sudoku(unmodified_image):
     image = grayscale_img(unmodified_image)
@@ -368,10 +402,11 @@ def extract_sudoku(unmodified_image):
 
     sudoku_contour = get_sudoku_contour(image)
     vertices = get_sudoku_vertices(image,sudoku_contour)
+    vertices = order_vertices(vertices)
     # lower left corner -> upper left
     vertices_in_transformed = [(270,270),(270,0),(0,0),(0,270)]
     # uper left -> upper left 
-    vertices_in_transformed = [(270,0),(0,0),(0,270),(270,270)]
+    vertices_in_transformed = [(0,0),(0,270),(270,270),(270,0)]
 
     transformed = transform_img(rescale_img(unmodified_image),coordinates_switched(vertices),coordinates_switched(vertices_in_transformed))
     
@@ -379,8 +414,7 @@ def extract_sudoku(unmodified_image):
     return transformed
 
 
-
-if __name__=="__main__":
+def example():
     img_name = "Sudoku_front.jpg"
     color_img = Image.open(ASSET_DIR + img_name)
     img = grayscale_img(color_img)
@@ -411,4 +445,5 @@ if __name__=="__main__":
     transformed.save(ASSET_DIR +"Sudoku_front_transformed.png")
 
 
-    
+if __name__=="__main__":
+    print(order_vertices([(4,4),(2,3),(1,1),(4,0)])) 
